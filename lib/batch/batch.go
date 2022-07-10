@@ -20,15 +20,15 @@ func getBatch(n int64, pool int64) (res []user) {
 	var wg sync.WaitGroup
 	for int64(len(res)) < n {
 		for i := 0; int64(i) < pool; i++ {
+			id += 1
 			wg.Add(1)
-			go func(wg *sync.WaitGroup) {
+			go func(wg *sync.WaitGroup, j int64) {
 	                        defer wg.Done()
-				id += 1
-				u :=  getOne(id)
+				u :=  getOne(j)
 				mx.Lock()
 				res = append(res, u)
 				mx.Unlock()
-			}(&wg)
+			}(&wg, id)
 		}
 		wg.Wait()
 	}
